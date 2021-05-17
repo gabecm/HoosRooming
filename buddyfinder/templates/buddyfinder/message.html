@@ -1,0 +1,154 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HoosRooming - Preferences</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'buddyfinder/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'buddyfinder/img/favicon.ico' %}">
+    <style>
+        .main-container {
+            margin-top: 2rem;
+        }
+
+        .float-left > .card {
+            margin-bottom: 1rem;
+        }
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'buddyfinder:index' %}">HoosRooming</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:matching' %}">Matches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:preferences' %}">Preferences</a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'buddyfinder:inbox'  %}">Messages</a>
+                </li>
+
+            </ul>
+            <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+            {% else %}
+            </ul>
+            <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/accounts/google/login/">Login with Google</a>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{#-------------------------------------------#}
+<div class="container main-container">
+    <div class="row">
+        <div class="float-left col-lg-5">
+            <h5 class="card-header" style="margin-bottom: 10px">Chats</h5>
+            <div style="height: 75vh; overflow-y: scroll; overflow-x: hidden">
+                {% for message in messages %}
+                    <div class="card">
+                        <a href="{% url 'buddyfinder:directs' message.user.username %}" class="text-decoration-none">
+                            <div class="card-body" style="margin-bottom: 0.2rem">
+                                <div class="row">
+                                    <div class="left col-lg-4">
+                                        <img src="{{ message.user.image.url }}" style="width: 60px" class="rounded-sm" alt="...">
+                                    </div>
+                                    <div class="right col-lg-8">
+                                        <h6 class="card-title">{{ message.user.first_name }} {{ message.user.last_name }}</h6>
+                                        <p class="card-text text-muted">{{ message.last_date }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="float-right col-lg-7" style="">
+            <div class="card" style="width: 100%">
+                <div class="card-header">
+                    @{{ active_direct }}
+                </div>
+                <ul class="list-group list-group-flush" style="">
+                    <li class="list-group-item" style="height: 65vh;">
+                        <div style="height: 63.5vh; overflow-y: scroll; overflow-x: hidden">
+                            {% for direct in directs %}
+                            <div class="media">
+                                {% if direct.sender.image %}
+                                <img src="{{ direct.sender.image.url }}" class="align-self-start mr-3 rounded-sm"
+                                     style="border:0px;float:left;width:50px"
+                                     alt="Placeholder image">
+                                {% else %}
+                                <img src="https://bulma.io/images/placeholders/96x96.png"
+                                     class="align-self-start mr-3 rounded-sm"
+                                     style="border:0px;float:left;width:50px" alt="Placeholder image">
+                                {% endif %}
+                                <div class="media-body">
+                                    <h6 class="mt-0">{{direct.sender.first_name }} {{ direct.sender.last_name }}
+                                        <span class="badge badge-primary badge-pill">@{{ direct.sender.username }}</span>
+                                        <span class="badge badge-pill badge-secondary float-right mr-3">{{ direct.created_at|date:'N d G:i'}}</span></h6>
+                                    <p class="text-break mr-2">{{ direct.msg_content }}</p>
+                                    <hr>
+                                </div>
+                            </div>
+                            {% endfor %}
+                         </div>
+                    </li>
+                    <li class="list-group-item">
+                        <form role="form" method="POST" action="{% url 'buddyfinder:send_direct' %}">
+                            {% csrf_token %}
+                            <div class="media-content">
+                                <input type="hidden" name="to_user" value="{{ active_direct }}">
+                                <div class="field form-group text-wrap">
+                                    <input type="text" rows="5" class="textarea form-control" id="sendMsgLbl" name="body"
+                                              placeholder="Message..." style="width:95%; height: 5vh" required>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</body>
+</html>

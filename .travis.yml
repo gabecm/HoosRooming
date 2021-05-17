@@ -1,0 +1,14 @@
+language: python
+python:
+- '3.6'
+install:
+- pip install -r requirements-travis.txt
+script:
+- python manage.py test --keepdb
+deploy:
+  provider: heroku
+  api_key:
+    secure: WYBGHaHf+lgI/kYGW4WAGymtKYjJEI1Q3vqZl8DTodl5lEJyXRTpPON94U+JhqChKWjChNZh5LmM0qJK0kGSXMa3HwlgUYUgtSHf3XxcRk1UCPD8X1byCNjTw6ZF2L7wlpPxcGEcQjesmVbqXJUlWh8kOTdP2fkAssbyed79wHmLj8I71O9Y5IIXcyasIAYJTkS8oIatFI2XIJCcLftB7A1CTpu16boznkxmtxBy8c8ySGzGlg7Wv3nAvr4jPktq6vnNd0ZMms3aGNzU4RAEcIdHJyl7g2MxpWWoQozQsHhODFg+RxWZiRbrSPE9NZLYGnWhM4NaIc5IPrNZR12Ier9kJ2sbhMy1KO/8ykwn20jNBwtFAduJ+DfKHR/aoBd7TV1HXybGftHwP/B48mTTnAJkJRWAFBVCwqpjm+ClLGo4l9SnuywkkYheoQKAdlkShQrvvxJiJXQ9R00dec01O38k1G/13B6LbaPzDhrbOuixyIOTQyChqi5MUSQ3M+vurnGO+eVcygTlXPTCnPVrhtgTxmH20EQF/ddwqxBxJ64t6B5MCbPtEpujwubgFE8axAfYOdeNfXlkVUhW71/XpSEYEntrjR4q+RUbgQ3mGpvkZ1UK12B2OVoL6AWWwJIryUTjgwT4ywD7DierbvPhsKNTbo+tTEz9bKMwrr63TGU=
+  app: buddy-finder-b17
+  on:
+    repo: uva-cs3240-s21/project-b-17

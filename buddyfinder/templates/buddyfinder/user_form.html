@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>HoosRooming - Preferences</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static 'buddyfinder/style.css' %}">
+        <link rel="shortcut icon" href="{% static 'buddyfinder/img/favicon.ico' %}">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+            <div class="container">
+            <a class="navbar-brand" href="{% url 'buddyfinder:index' %}">HoosRooming</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:matching' %}">Matches</a>
+                    </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'buddyfinder:preferences' %}">Preferences</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'buddyfinder:inbox'  %}">Messages</a>
+                </li>
+            
+            </ul>
+              <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+              </ul>
+                {% else %}
+            </ul>
+              <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/accounts/google/login/">Login with Google</a>
+                </li>
+              </ul>
+                {% endif %}
+            </div>
+        </nav>
+
+        {% load cloudinary %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container top">
+                <h2>User Preferences</h2>                  
+                <div class="form-group">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input class="form-control" type="number" rows="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                        name="phone_number" value="{{ user.phone_number }}" min="0" maxlength="10"></input>
+                    </div>
+                    <div class="form-group">
+                        <label>Bio (500 characters)</label>
+                        <textarea class="form-control" rows="3" name="bio" maxlength="500">{{user.bio}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Profile Picture (.jpg or .png only)</label>
+                        <input type="file" class="form-control" name="image" accept=".png,.jpg" />
+                    </div>
+                    <div class="form-group">
+                        <label>Cleanliness Level</label>
+                        <select class="form-control" name="cleanliness_level">
+                            <option selected="selected" value="{{ user.cleanliness_level }}"></option>
+                            <option value="Messy">Messy</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Clean">Clean</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+        {#            <label>Lease Duration (e.g. June-July 2021)</label>#}
+        {#            <input class="form-control" type="text" rows="1" name="lease" value="{{ user.lease }}"></input>#}
+                    <label>Lease Duration</label>
+                    <select class="form-control" name="lease">
+                        <option selected="selected" value="{{ user.lease }}"></option>
+                        <option value="Fall Only">Fall Only</option>
+                        <option value="Spring Only">Spring Only</option>
+                        <option value="Academic Year">Academic Year</option>
+                        <option value="Summer Only">Summer Only</option>
+                        <option value="1 Year">1 Year</option>
+                    </select>
+                </div>
+{#                    <div class="form-group">#}
+{#                        <label>When does your lease start?</label>#}
+{#                        <div class="row">#}
+{#                            <div class="col-md">#}
+{#                                <select class="form-control" name="lease_month">#}
+{#                                    <option selected="selected" value=""></option>#}
+{#                                    <option value="January">January</option>#}
+{#                                    <option value="February">February</option>#}
+{#                                    <option value="March">March</option>#}
+{#                                    <option value="April">April</option>#}
+{#                                    <option value="May">May</option>#}
+{#                                    <option value="June">June</option>#}
+{#                                    <option value="July">July</option>#}
+{#                                    <option value="August">August</option>#}
+{#                                    <option value="September">September</option>#}
+{#                                    <option value="October">October</option>#}
+{#                                    <option value="November">November</option>#}
+{#                                    <option value="December">December</option>#}
+{#                                </select>#}
+{#                            </div>#}
+{#                            <div class="col-sm">#}
+{#                                <select class="form-control" name="lease_year">#}
+{#                                    <option selected="selected" value=""></option>#}
+{#                                    <option value="2021">2021</option>#}
+{#                                    <option value="2022">2022</option>#}
+{#                                    <option value="2023">2023</option>#}
+{#                                    <option value="2024">2024</option>#}
+{#                                </select>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+                    <div class="form-group">
+                        <label>Monthly Rent Budget (e.g. 500)</label>
+                        <input class="form-control" type="number" rows="1" name="budget"
+                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                        maxlength="4"
+                        min=0
+                        value="{{ user.budget }}"></input>
+                    </div>
+                    <div class="form-group">
+                        <label>Noise Level</label>
+                        <select class="form-control" name="noise_level">
+                            <option selected="selected" value="{{ user.noise_level }}"></option>
+                            <option value="Noisy">Noisy</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Quiet">Quiet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Are you an early-bird or a night-owl?</label>
+                        <select class="form-control" name="morning_preference">
+                            <option selected="selected" value="{{ user.morning_preference }}"></option>
+                            <option value="Early-bird">Early-bird</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Night-owl">Night-owl</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success btn-lg">Save</button>
+                        <a href="{% url 'buddyfinder:index' %}"> <button type="button" class="btn btn-danger btn-lg" onclick="">Cancel</button></a>
+                    </div>
+                </div>
+            </form>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        </body>
+</html>

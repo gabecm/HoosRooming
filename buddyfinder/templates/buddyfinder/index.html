@@ -1,0 +1,110 @@
+{% load socialaccount %}
+{% load static %}
+<html>
+  <head>
+    <title>HoosRooming</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'buddyfinder/style.css' %}">
+      <link rel="shortcut icon" href="{% static 'buddyfinder/img/favicon.ico' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <div class="container">
+      <a class="navbar-brand" href="{% url 'buddyfinder:index' %}">HoosRooming</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+              <a class="nav-link active" href="{% url 'buddyfinder:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'buddyfinder:matching' %}">Matches</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'buddyfinder:preferences' %}">Preferences</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'buddyfinder:inbox'  %}">Messages</a>
+          </li>
+
+      </ul>
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+          {% else %}
+      </ul>
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item">
+              <a class="nav-link" href="/accounts/google/login/">Login with Google</a>
+          </li>
+        </ul>
+          {% endif %}
+      </div>
+  </nav>
+    <div class="container top">
+      {% if user.is_authenticated %}
+      <!-- IF LOGGED IN -->
+      <h1>Welcome, <b>{{ user.first_name }} {{ user.last_name }}!</b></h1>
+      <br />
+      <div class="row">
+        <div class="col">
+          <img class="img-thumbnail" width="100%" src="{{ user.image.url }}" />
+        </div>
+        <div class="col-9">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title" style="font-weight: bold;">Your Preferences</h3>
+              <h5 class="card-subtitle mb-2 text-muted">This information is used to match you to the best roommate!</h5>
+              <p class="card-text">
+                <p><b>Email:</b> {{user.email}}</p>
+                <p><b>Bio:</b> {{user.bio}}</p>
+                <p><b>Monthly Rent Budget:</b> ${{user.budget}}</p>
+                <p><b>Lease Duration:</b> {{user.lease}}</p>
+                <p><b>Cleanliness:</b> {{user.cleanliness_level}}</p>
+                <p><b>Noise Level:</b> {{user.noise_level}}</p>
+                <p><b>Morning Preference:</b> {{user.morning_preference}}</p>
+                <p><b>Top Spotify Track:</b>  {% if user.spotify_song %}
+                  <a href="{{user.spotify_link}}">{{user.spotify_song}} - {{user.spotify_artist}}</a>
+                  {% else %}
+                  <a href="{% url 'buddyfinder:spotify' %}"><button class="btn btn-sm btn-success"><small>Connect to Spotify</small></button></a>
+                  {% endif %}
+                </p>
+              </p>
+              <a href="{% url 'buddyfinder:preferences' %}" class="card-link">&raquo; Edit Preferences</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% else %}
+      <!-- IF NOT LOGGED IN -->
+      <div class="row">
+        <div class="col-12">
+          <div class="jumbotron tundy" style="padding: 2.5vw; padding-top: 12.5vh; padding-bottom: 5vw; height: 100%;">
+            <h4 class="display-4">Welcome to HoosRooming!</h4>
+            <br />
+            <p class="lead" style="line-height: 2.5vw;">Your one-stop solution to finding a great college roommate at the University of Virginia. Join us!</p>
+            <hr style="background-color: #FFF;">
+            <a class="btn btn-success btn-lg" href="{% provider_login_url 'google' %}">Login with Google</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="footer">&copy; Copyright HoosRooming 2021. </div>
+    </div>
+    {% if message %}
+    <script>
+      alert("Error: Spotify account connected, but no music was found. Please play some songs and then try again.")
+    </script>
+    {% endif %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </body>
+</html>

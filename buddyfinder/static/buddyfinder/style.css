@@ -1,0 +1,44 @@
+/*@import "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";*/
+@import "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap";
+@import "bootstrap-minty.min.css";
+
+body {
+	background: #fff;
+	background: url("img/bg.png");
+	font-family: "Open Sans", sans-serif;
+}
+
+.jumbotron {
+	background: #fff;
+}
+
+.tundy {
+	background-image: url("img/tundy.jpg");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+	background-size: cover;
+	background-color: #464646;
+	color: #fff;
+}
+
+.display-4 {
+	color: #fff;
+}
+
+.top,
+.footer {
+	margin-top: 7.5vh;
+}
+
+.footer {
+	font-size: small;
+}
+
+.nav-link {
+	transition: 0.25s; /* delays for 1 second */
+}
+
+.btn {
+	transition: 0.25s;
+}

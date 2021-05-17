@@ -1,0 +1,423 @@
+{% load static %}
+<!--<!DOCTYPE html>-->
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">-->
+<html lang="en">
+
+<head>
+    <title>HoosRooming - Match</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'buddyfinder/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'buddyfinder/img/favicon.ico' %}">
+    <style>
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=88);
+        }
+
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 55%;
+            height: 55%;
+            padding: 20px;
+            border: 10px solid #60cc9c;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .top-buffer {
+            margin-top: 1.3cm;
+        }
+
+
+        .white_content2 {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 55%;
+            height: 55%;
+            padding: 20px;
+            border: 10px solid #60cc9c;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .white_content3 {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 55%;
+            height: 55%;
+            padding: 20px;
+            border: 10px solid #60cc9c;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        .white_contact {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 55%;
+            height: 55%;
+            padding: 20px;
+            border: 10px solid #60cc9c;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+
+        b {
+            position: relative;
+            padding-top: 2em;
+            margin-top: 70px;
+        }
+
+
+        .bottom-three {
+            margin-bottom: 18cm;
+            overflow: auto;
+            width: 380px;
+        }
+
+        x {
+            color: #00CC00;
+            text-decoration: none;
+        }
+
+        message {
+            color: #FFFFFF text-decoration: none;
+        }
+
+        element {
+            margin: 20cm;
+
+        }
+
+        spacing {
+            margin-right: 20cm;
+        }
+
+        .horizontal-scroll-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            border-color: black;
+
+        }
+
+        .horizontal-scroll-wrapper>div {
+            display: inline-block;
+            float: none;
+        }
+
+        .new{
+            border-width: thick;
+            border-color: black;
+            border-radius: 8px;
+        }
+
+        .horizontal-scroll-wrapper>div:hover {
+            background-color: #bdddce;
+            -webkit-box-shadow: -1px 1px 5px 9px #bdddce;
+            -moz-box-shadow: -1px 1px 5px 9px #bdddce;
+            box-shadow: -1px 1px 5px 9px #bdddce;
+        }
+
+        .card body {
+            padding: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'buddyfinder:index' %}">HoosRooming</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'buddyfinder:index' %}">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'buddyfinder:matching' %}">Matches</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'buddyfinder:preferences' %}">Preferences</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'buddyfinder:inbox'  %}">Messages</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+                {% else %}
+                </ul>
+                <ul class="navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/google/login/">Login with Google</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container top">
+        <div id="matches" style="margin-top:1cm">
+            <table class="table table-bordered" style="text-align: center; border-color: black; cursor: pointer;">
+                <tr>
+                    <th id="ntoggle" style="border-color: black; background-color: lightgray;" onclick="toggleNew()">New Matches</th>
+                    <th id="ptoggle" style="border-color: black;" onclick="togglePending()">Pending Matches</th>
+                    <th id="atoggle" style="border-color: black;" onclick="toggleAccepted()">Accepted Matches</th>
+                </tr>
+            </table>
+            <div class="horizontal-scroll-wrapper">
+                {% if dict %}
+                {% for match in dict %}
+                <div class="row-body new" style="margin-right:1.5cm;margin-bottom:1cm">
+                    <img class="img-thumbnail d-inline" width="100vw" src="{{ match.0.image.url }}"
+                        style="vertical-align:middle"
+                        onclick="document.getElementsByClassName('white_content')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade').style.display='block'" />
+                    <h4 class="d-inline">{{ match.0.first_name }} {{ match.0.last_name }}
+                        <p align="right">Matching Quality:
+                            {{ match.1 }}% </p>
+                    </h4>
+                    <div class="modal-container">
+                        <h6>Show more information：<x href="javascript:void(0)"
+                                onclick="document.getElementsByClassName('white_content')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade').style.display='block'.style.position ='fixed'">
+                                Click
+                                here</x>
+                        </h6>
+                        <div id="light" class="white_content">
+                            <h1>{{match.0.first_name}} {{ match.0.last_name }}</h1><br>
+                            <p>Matching Quality: {{ match.1 }}% </p>
+                            <p><b>Bio:</b> {{match.0.bio}}</p>
+                            <p><b>Lease Duration:</b> {{match.0.lease}}</p>
+                            <p><b>Cleanliness:</b> {{match.0.cleanliness_level}}</p>
+                            <p><b>Noise Level:</b> {{match.0.noise_level}}</p>
+                            <p><b>Morning Preference:</b> {{match.0.morning_preference}}</p>
+                            {% if match.0.spotify_song %}
+                            <p><b>Top Spotify Track:</b> <a
+                                    href="{{match.0.spotify_link}}">{{match.0.spotify_song}} -
+                                    {{match.0.spotify_artist}}</a></p>
+                            {% else %}
+                            <p><i>This user has not connected their Spotify!</i></p>
+                            {% endif %}
+                            <p align="right"><a href="javascript:void(0)"
+                                    onclick="document.getElementsByClassName('white_content')[{{ forloop.counter }} - 1].style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                        </div>
+                        <div id="fade" class="black_overlay"></div>
+                    </div>
+                    <form class="d-inline" action="" method="post">
+                        {% csrf_token %}
+                        <p align="right">
+                            <button type="submit" class="btn btn-success" name="user" value="a{{ match.0.username }}"
+                                onClick="return confirm('Are you sure?')">Accept</button>
+                            <button type="submit" class="btn btn-danger" name="user" value="r{{ match.0.username }}"
+                                onClick="return confirm('Are you sure? Profile will dissapear from matches. ')">Reject</button>
+                        </p>
+                        <br />
+                    </form>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="new" style="text-align:center">No matches available :( </p>
+                {% endif %}
+                {% if fav %}
+                {% for match in fav %}
+                <div class="row-body accepted" style="margin-right:1.5cm;margin-bottom:1cm">
+                    <img class="img-thumbnail d-inline" width="100vw" src="{{ match.0.image.url }}"
+                        style="vertical-align:middle"
+                        onclick="document.getElementsByClassName('white_content2')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade2').style.display='block'" />
+                    <h4 class="d-inline">{{ match.0.first_name }} {{ match.0.last_name }}
+                        <p align="right">Matching Quality:
+                            {{ match.1 }}% </p>
+                    </h4>
+                    <h6></h6>
+                    <h6>Email: <a href="mailto:{{match.0.email}}">
+                            {{match.0.email}}
+                        </a></h6>
+                    <h6>Phone: <a href="tel:{{match.0.phone_number}}">
+                            {{match.0.phone_number}}
+                        </a></h6>
+                    <div class="modal-container">
+                        <h6>Show more information：<x href="javascript:void(0)"
+                                onclick="document.getElementsByClassName('white_content2')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade2').style.display='block'">
+                                Click here </x>
+                        </h6>
+                        <div id="light" class="white_content2">
+                            <h1>{{match.0.first_name}} {{ match.0.last_name }}</h1><br>
+                            <p>Matching Quality: {{ match.1 }}% </p>
+                            <p><b>Bio:</b> {{match.0.bio}}</p>
+                            <p><b>Lease Duration:</b> {{match.0.lease}}</p>
+                            <p><b>Cleanliness:</b> {{match.0.cleanliness_level}}</p>
+                            <p><b>Noise Level:</b> {{match.0.noise_level}}</p>
+                            <p><b>Morning Preference:</b> {{match.0.morning_preference}}</p>
+                            {% if match.0.spotify_song %}
+                            <p><b>Favorite Spotify Album:</b> <a
+                                    href="{{match.0.spotify_link}}">{{match.0.spotify_song}} -
+                                    {{match.0.spotify_artist}}</a></p>
+                            {% else %}
+                            <p><i>This user has not connected their Spotify!</i></p>
+                            {% endif %}
+                            <p align="right"><a href="javascript:void(0)"
+                                    onclick="document.getElementsByClassName('white_content2')[{{ forloop.counter }} - 1].style.display='none';document.getElementById('fade2').style.display='none'">Close</a>
+                        </div>
+                        <div id="fade2" class="black_overlay"></div>
+                    </div>
+                    <form class="d-inline" action="" method="post">
+                        {% csrf_token %}
+                        <p align="right">
+                            <button type="button" class="btn btn-primary">
+                                <a class="text-decoration-none text-light"
+                                    href="{% url 'buddyfinder:start_conversation' match.0.username %}">Message</a>
+                            </button>
+                            <button type="submit" class="btn btn-danger" name="user" value="n{{ match.0.username }}"
+                                onClick="window.location.reload();">Remove</button>
+                        </p>
+                        <br />
+                    </form>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="accepted" style="text-align:center">No matches available :( </p>
+                {% endif %}
+                {% if pend %}
+                {% for match in pend %}
+                <div class="row-body pending" style="margin-right:1.5cm;margin-bottom:1cm">
+                    <img class="img-thumbnail d-inline" width="100vw" src="{{ match.0.image.url }}"
+                        style="vertical-align:middle"
+                        onclick="document.getElementsByClassName('white_content3')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade3').style.display='block'" />
+                    <h4 class="d-inline">{{ match.0.first_name }} {{ match.0.last_name }}
+                        <p align="right">Matching Quality:
+                            {{ match.1 }}%</p>
+                    </h4>
+                    <div class="modal-container">
+                        <h6>Show more information：<x href="javascript:void(0)"
+                                onclick="document.getElementsByClassName('white_content3')[{{ forloop.counter }} - 1].style.display='block';document.getElementById('fade3').style.display='block'.style.position ='fixed'">
+                                Click
+                                here</x>
+                        </h6>
+                        <div id="light" class="white_content3">
+                            <h1>{{match.0.first_name}} {{ match.0.last_name }}</h1><br>
+                            <p>Matching Quality: {{ match.1 }}% </p>
+                            <p><b>Bio:</b> {{match.0.bio}}</p>
+                            <p><b>Lease Duration:</b> {{match.0.lease}}</p>
+                            <p><b>Cleanliness:</b> {{match.0.cleanliness_level}}</p>
+                            <p><b>Noise Level:</b> {{match.0.noise_level}}</p>
+                            <p><b>Morning Preference:</b> {{match.0.morning_preference}}</p>
+                            {% if match.0.spotify_song %}
+                            <p><b>Favorite Spotify Album:</b> <a
+                                    href="{{match.0.spotify_link}}">{{match.0.spotify_song}} -
+                                    {{match.0.spotify_artist}}</a></p>
+                            {% else %}
+                            <p><i>This user has not connected their Spotify!</i></p>
+                            {% endif %}
+                            <p align="right"><a href="javascript:void(0)"
+                                    onclick="document.getElementsByClassName('white_content3')[{{ forloop.counter }} - 1].style.display='none';document.getElementById('fade3').style.display='none'">Close</a>
+                        </div>
+                        <div id="fade3" class="black_overlay"></div>
+                    </div>
+                    <form class="d-inline" action="" method="post">
+                        {% csrf_token %}
+                        <p align="right">
+                            <button type="submit" class="btn btn-danger" name="user" value="n{{ match.0.username }}"
+                                onClick="window.location.reload();">Remove</button>
+                        </p>
+                        <br />
+                    </form>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="pending" style="text-align:center">No matches available :(</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var n = document.getElementsByClassName("new");
+        var a = document.getElementsByClassName("accepted");
+        var p = document.getElementsByClassName("pending");
+        var i;
+        var nt = document.getElementById("ntoggle");
+        var pt = document.getElementById("ptoggle");
+        var at = document.getElementById("atoggle");
+        toggleNew();
+        function toggleNew() {
+            nt.style.backgroundColor = "lightgray";
+            pt.style.backgroundColor = "";
+            at.style.backgroundColor = "";
+            for (i = 0; i < n.length; i++) {
+                n[i].style.display = "";
+            }
+            for (i = 0; i < a.length; i++) {
+                a[i].style.display = "none";
+            }
+            for (i = 0; i < p.length; i++) {
+                p[i].style.display = "none";
+            }
+        }
+        function toggleAccepted() {
+            nt.style.backgroundColor = "";
+            pt.style.backgroundColor = "";
+            at.style.backgroundColor = "lightgray";
+            for (i = 0; i < n.length; i++) {
+                n[i].style.display = "none";
+            }
+            for (i = 0; i < a.length; i++) {
+                a[i].style.display = "";
+            }
+            for (i = 0; i < p.length; i++) {
+                p[i].style.display = "none";
+            }
+        }
+        function togglePending() {
+            nt.style.backgroundColor = "";
+            pt.style.backgroundColor = "lightgray";
+            at.style.backgroundColor = "";
+            for (i = 0; i < n.length; i++) {
+                n[i].style.display = "none";
+            }
+            for (i = 0; i < a.length; i++) {
+                a[i].style.display = "none";
+            }
+            for (i = 0; i < p.length; i++) {
+                p[i].style.display = "";
+            }
+        }
+    </script>
+</body>
+
+</html>
