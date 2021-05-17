@@ -1,5 +1,7 @@
 # HoosRooming
 HoosRooming is a Django web application that helps UVa students find potential roommates.
+* Site URL: https://hoosrooming.herokuapp.com/
+* Contributors: Gabriel Mallari, Kabir Menghrajani, Dheer Toprani, Brian Tran, Tiancheng Ren
 
 ## Features
 * Profile Page
