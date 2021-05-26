@@ -27,6 +27,17 @@ HoosRooming is a Django web application that helps UVa students find potential r
     * The left list displays all current chats in order to most recently received or sent messages
     * The right side displays the conversation of the user currently selected
     
+## Screenshots
+![Homepage](buddyfinder/static/buddyfinder/img/homepage.JPG)
+
+![Profile](buddyfinder/static/buddyfinder/img/profile.JPG)
+
+![Matches](buddyfinder/static/buddyfinder/img/matches.JPG)
+
+![Match Info](buddyfinder/static/buddyfinder/img/match-info.JPG)
+
+![Messages](buddyfinder/static/buddyfinder/img/messages.JPG)
+
 ## License 
 The BSD License
 
